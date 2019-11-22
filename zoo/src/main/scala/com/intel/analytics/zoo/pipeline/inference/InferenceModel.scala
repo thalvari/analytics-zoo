@@ -585,10 +585,17 @@ class InferenceModel(private var autoScalingEnabled: Boolean = true,
 
       val result = model.predict(inputActivity)
       val end = System.nanoTime()
-      val batchSize = result.toTensor[Float].size(1)
+      val batchSize = inputActivity.toTensor[Float].size()(0)
+
       val latency = end - begin
       val name = s"model predict for batch ${batchSize}"
       InferenceSupportive.logger.info(s"$name time elapsed [${latency/1e9} s, ${latency/1e6} ms].")
+
+      if (inferenceSummary != null) {
+        val throughput = batchSize / (latency/1e9)
+        inferenceSummary.addScalar("Throughput", throughput.toFloat, batchCnt)
+        batchCnt += 1
+      }
 
       val bb = System.nanoTime()
       if (inferenceSummary != null) {
@@ -614,6 +621,7 @@ class InferenceModel(private var autoScalingEnabled: Boolean = true,
       val ee = System.nanoTime()
 //      InferenceSupportive.logger.info("Calculating and writing summary seconds"
 //        + ((ee - bb) / 1e9).toString)
+
       result
     } finally {
       model match {
