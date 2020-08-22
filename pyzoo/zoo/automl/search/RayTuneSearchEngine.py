@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 
+import os
+from tempfile import mkdtemp
+
 import ray
 from ray import tune
 from copy import copy, deepcopy
@@ -116,6 +119,7 @@ class RayTuneSearchEngine(SearchEngine):
         Run trials
         :return: trials result
         """
+        local_dir = mkdtemp(prefix="ray_results_", dir=os.environ["TMPDIR"])
         # function based
         if not self.search_algorithm:
             analysis = tune.run(
@@ -126,7 +130,8 @@ class RayTuneSearchEngine(SearchEngine):
                 num_samples=self.num_samples,
                 resources_per_trial=self.resources_per_trail,
                 verbose=1,
-                reuse_actors=True
+                reuse_actors=True,
+                local_dir=local_dir
             )
         else:
             analysis = tune.run(
@@ -138,7 +143,8 @@ class RayTuneSearchEngine(SearchEngine):
                 num_samples=self.num_samples,
                 resources_per_trial=self.resources_per_trail,
                 verbose=1,
-                reuse_actors=True
+                reuse_actors=True,
+                local_dir=local_dir
             )
         self.trials = analysis.trials
         return analysis
