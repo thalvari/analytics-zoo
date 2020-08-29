@@ -143,7 +143,8 @@ class RayTuneSearchEngine(SearchEngine):
                 resources_per_trial=self.resources_per_trail,
                 verbose=1,
                 reuse_actors=True,
-                local_dir=local_dir
+                local_dir=local_dir,
+                raise_on_failed_trial=False
             )
         else:
             trials = tune.run(
@@ -156,7 +157,8 @@ class RayTuneSearchEngine(SearchEngine):
                 resources_per_trial=self.resources_per_trail,
                 verbose=1,
                 reuse_actors=True,
-                local_dir=local_dir
+                local_dir=local_dir,
+                raise_on_failed_trial=False
             )
         # class based
         # if not self.search_algorithm:
