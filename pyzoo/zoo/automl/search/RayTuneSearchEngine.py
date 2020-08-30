@@ -202,7 +202,7 @@ class RayTuneSearchEngine(SearchEngine):
         #         verbose=1,
         #         reuse_actors=True
         #         )
-        self.trials = [trial for trial in trials if trial.is_finished()]
+        self.trials = [trial for trial in trials if trial.status == "TERMINATED"]
         return self
 
     def get_best_trials(self, k=1):
