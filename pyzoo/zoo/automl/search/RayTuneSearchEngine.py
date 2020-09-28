@@ -131,7 +131,7 @@ class RayTuneSearchEngine(SearchEngine):
         Run trials
         :return: trials result
         """
-        local_dir = mkdtemp(prefix="ray_results_", dir=os.environ["TMPDIR"])
+        local_dir = mkdtemp(prefix="ray_results_", dir=os.environ["SCRATCH"])
         # function based
         if not self.search_algorithm:
             trials = tune.run(
